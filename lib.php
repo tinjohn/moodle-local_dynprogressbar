@@ -29,10 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 
 function local_dynprogressbar_navigationlinks(moodle_page $page, context $context) {
     
-    // $params = [];
-    // $page->requires->js_call_amd('local_dynprogressbar/dynprbar', 'init');
-    // $page->requires->js_call_amd('local_dynprogressbar/cm_h5p_scored_listener', 'init');
-    // $page->requires->js_call_amd('local_dynprogressbar/cm_man_compl_listener', 'init');
 }
 
 //\local_dynprogressbar\dynprogressbar::addlistener();
@@ -40,8 +36,8 @@ function local_dynprogressbar_navigationlinks(moodle_page $page, context $contex
 
 function local_dynprogressbar_extend_settings_navigation($settingsnav, $context) {
     global $CFG, $PAGE;
-    $PAGE->requires->js_call_amd('local_dynprogressbar/dynprbar', 'init');
-    $PAGE->requires->js_call_amd('local_dynprogressbar/cm_h5p_scored_listener', 'init');
-    $PAGE->requires->js_call_amd('local_dynprogressbar/cm_man_compl_listener', 'init');
+     $PAGE->requires->js_call_amd('local_dynprogressbar/dynprbar', 'init');
+     $PAGE->requires->js_call_amd('local_dynprogressbar/cm_h5p_scored_listener', 'init');
+     $PAGE->requires->js_call_amd('local_dynprogressbar/cm_man_compl_listener', 'init');
 
 }
