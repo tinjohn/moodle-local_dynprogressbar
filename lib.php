@@ -35,8 +35,6 @@ function local_dynprogressbar_navigationlinks(moodle_page $page, context $contex
 //\local_dynprogressbar\renderer::addlistener();
 
 function local_dynprogressbar_extend_settings_navigation($settingsnav, $context) {
-    global $CFG, $PAGE, $COURSE;
-
+    global $PAGE;
         $PAGE->requires->js_call_amd('local_dynprogressbar/dynprbar', 'init');
-
 }
