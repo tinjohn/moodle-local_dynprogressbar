@@ -35,9 +35,8 @@ function local_dynprogressbar_navigationlinks(moodle_page $page, context $contex
 //\local_dynprogressbar\renderer::addlistener();
 
 function local_dynprogressbar_extend_settings_navigation($settingsnav, $context) {
-    global $CFG, $PAGE;
-     $PAGE->requires->js_call_amd('local_dynprogressbar/dynprbar', 'init');
-     $PAGE->requires->js_call_amd('local_dynprogressbar/cm_h5p_scored_listener', 'init');
-     $PAGE->requires->js_call_amd('local_dynprogressbar/cm_man_compl_listener', 'init');
+    global $CFG, $PAGE, $COURSE;
+
+        $PAGE->requires->js_call_amd('local_dynprogressbar/dynprbar', 'init');
 
 }

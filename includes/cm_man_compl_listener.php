@@ -28,5 +28,7 @@ $showprogressbar = get_config('local_dynprogressbar', 'showprogressbar');
 
 // Add scroll-spy AMD module if the feature is enabled.
 //if ($showprogressbar == local_dynprogressbar_SETTING_SELECT_YES) {
-    $PAGE->requires->js_call_amd('local_dynprogressbar/cm_man_compl_listener', 'init');
+
+//$PAGE->requires->js_call_amd('local_dynprogressbar/cm_man_compl_listener', 'init');
+
 //}
