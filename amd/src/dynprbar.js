@@ -1,6 +1,10 @@
 import {getActivityCompletion} from './repository';
 import {getProgressPercentage} from './repository';
 import {getProgressbarInnerHTML} from './repository';
+import { init as h5plistener } from './cm_h5p_scored_listener';
+import { init as cmtogglelistener } from './cm_man_compl_toggle';
+
+
 
 // DO NOT USE
 export const addProgressFromCoreData = async() => {
@@ -89,7 +93,17 @@ export const changeProgressbar = async() => {
 var dynprbar_action = changeProgressbar;
 
 export const init = () => {
-
+    var prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
+    // alert('pr' + pr);
+    // nimm doch das bitte
+    console.log('prbarneusrc' + prbar);
+    if(prbar) {
+        console.log('dynprogressbar----load listener');
+        h5plistener();
+        cmtogglelistener();
+    } else {
+        console.log('dynprogressbar----no listeners loaded due to missing prbar');
+    }
     window.addEventListener('load', function () {
         //var pr = document.getElementsByClassName('progress')[0];
         var prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];

@@ -22,7 +22,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+let registered = false;
+
+/**
+ * Function to intialise and register event listeners for this module.
+ */
 export const init = () => {
+    if (registered) {
+        return;
+    }
+    registered = true;
+
+
   /**
    * Initialising.
    */
@@ -38,26 +49,26 @@ export const init = () => {
         var payload = arguments[0];
         if(payload === null) {
             send.apply(this, arguments);
-            return;
+        } else {
+            console.log("dynprogressbar---the payload send-----" + payload);
+            var isValidJSON = true;
+            try {
+                JSON.parse(payload);
+            } catch {
+                isValidJSON = false;
+            }
+            if(isValidJSON) {
+                // Assign an event listener
+                // and remove it again - to prevent double execution
+                // https://www.mediaevent.de/javascript/remove-event-listener.html
+                this.addEventListener("load", function removeMe () {
+                    readAJAXrequestsend(payload);
+                    this.removeEventListener("load", removeMe);
+                }, false);
+            }
+            // Call the stored reference to the native method
+            send.apply(this, arguments);
         }
-        console.log("dynprogressbar---the payload send-----" + payload);
-        var isValidJSON = true;
-        try {
-            JSON.parse(payload);
-        } catch {
-            isValidJSON = false;
-        }
-        if(isValidJSON) {
-            // Assign an event listener
-            // and remove it again - to prevent double execution
-            // https://www.mediaevent.de/javascript/remove-event-listener.html
-            this.addEventListener("load", function removeMe () {
-                readAJAXrequestsend(payload);
-                this.removeEventListener("load", removeMe);
-            }, false);
-        }
-        // Call the stored reference to the native method
-        send.apply(this, arguments);
     };
 
     /**

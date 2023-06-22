@@ -24,7 +24,16 @@
 
 
 
+let registered = false;
+
+/**
+ * Function to intialise and register event listeners for this module.
+ */
 export const init = () => {
+    if (registered) {
+        return;
+    }
+    registered = true;
 
 
   /**
@@ -35,14 +44,24 @@ export const init = () => {
   const handleXAPIEvent = function (event) {
     if(event && event.data && event.data.statement && event.data.statement.result) {
           if(event.data.statement.result.score && event.data.statement.result.score.scaled) {
-              console.log('--externalDispatcher-handleXAPIEvent-',event.data.statement.result);
+              console.log('--externalDispatcher-handleXAPIEvent-',event);
               // Trigger the custom event
               var cmcompletedEvent = new CustomEvent('cmcompleted',
               { detail: { message: 'a course module completed or scored' } });
               // // Trigger the custom event
               document.dispatchEvent(cmcompletedEvent);
+              hideCompletionInfo(this.frameElement);
           }
       }
+  };
+
+  const hideCompletionInfo = (eventtarget) => {
+    console.log('eventtarget',eventtarget);
+   // var parentElement = document.querySelector('div[data-region="completion-info"] [id="childElementID"]');
+    var element = eventtarget.closest('div[data-region="completion-info"]');
+    //var element = eventtarget.querySelector('div[data-region="completion-info"]');
+    element.style.visibility = 'hidden';
+    return true;
   };
 
 
@@ -105,12 +124,13 @@ export const init = () => {
                     window.document.h5player.H5P.externalDispatcher.on('xAPI', function (event) {
                     if(event && event.data && event.data.statement && event.data.statement.result) {
                         if(event.data.statement.result.score && event.data.statement.result.score.scaled) {
-                            console.log('dynprogressbar--externalDispatcher-single-',event.data.statement.result);
+                            console.log('dynprogressbar--externalDispatcher-single--',event);
 
                              var cmcompletedEvent = new CustomEvent('cmcompleted',
                             { detail: { message: 'a course module completed or scored' } });
                             // // Trigger the custom event
                              document.dispatchEvent(cmcompletedEvent);
+                             hideCompletionInfo(window.document);
                         }
                     }
                 });
@@ -127,7 +147,7 @@ export const init = () => {
                       // without function due to error with given function as argument
                       // tried a lot to make it work with function - no success
                       currentWindow.H5P.externalDispatcher.off('xAPI');
-                      currentWindow.H5P.externalDispatcher.on('xAPI',handleXAPIEvent);
+                      currentWindow.H5P.externalDispatcher.on('xAPI',handleXAPIEvent.bind(currentWindow));
                       // works fine but codes to messy
                       // currentWindow.H5P.externalDispatcher.on('xAPI',
                       // function (event) {
@@ -138,10 +158,11 @@ export const init = () => {
                       //            { detail: { message: 'a course module completed or scored' } });
                       //           // // Trigger the custom event
                       //            document.dispatchEvent(cmcompletedEvent);
+                      //            hideCompletionInfo(event.target);
                       //       }
                       //   }
                       // }
-                      // );
+                      //);
                   } else {
                       console.log('dynprogressbar--h5playerElement not found');
                   }
