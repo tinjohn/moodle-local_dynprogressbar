@@ -73,19 +73,23 @@ export const changeProgressPercentage = async() => {
 function getCourseIdFromBody() {
     const bodyTag = document.getElementsByTagName('body')[0];
     const attributeNames = bodyTag.getAttributeNames();
-
+    var courseid;
     attributeNames.forEach(attribute => {
         const attributeValue = bodyTag.getAttribute(attribute);
         const regex = /course-(\d+)/;
         const matches = attributeValue.match(regex);
         if (matches) {
             const courseNumber = matches[0];
-            const courseid= courseNumber.split('-')[1];
+            courseid = courseNumber.split('-')[1];
             console.log("Coursenumber------", courseid); // Output: course-64
             return(courseid);
         }
     });
-    return false;
+    if(courseid) {
+        return(courseid);
+    } else {
+        return false;
+    }
 }
 
 // reloads whole progress view - it is not as smooth as just changing width
