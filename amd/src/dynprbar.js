@@ -13,8 +13,8 @@ export const addProgressFromCoreData = async() => {
     const prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
     const spanElement = document.querySelector('strong.progress-bar-num');
 
-    const user_id = prbar.getAttribute('userid');
-    const course_id = prbar.getAttribute('courseid');
+   const user_id = prbar.getAttribute('userid');
+   const course_id = prbar.getAttribute('courseid');
 
     const response = await getActivityCompletion(user_id, course_id);
     window.console.log("getActivityCompletion----response", response);
@@ -36,6 +36,7 @@ export const addProgressFromCoreData = async() => {
         spanElement.innerHTML = newwidth + '%';
     }
 };
+
 
 // Smooth progressbar mod - but only width and innerhtlm values changed
 // potentiell important dependencies in tags are not modified
@@ -65,30 +66,59 @@ export const changeProgressPercentage = async() => {
     }
 };
 
+/**
+* USED get course id from body tag
+* Add progress whenever context.id module was not completed on inital load.
+*/
+function getCourseIdFromBody() {
+    const bodyTag = document.getElementsByTagName('body')[0];
+    const attributeNames = bodyTag.getAttributeNames();
+
+    attributeNames.forEach(attribute => {
+        const attributeValue = bodyTag.getAttribute(attribute);
+        const regex = /course-(\d+)/;
+        const matches = attributeValue.match(regex);
+        if (matches) {
+            const courseNumber = matches[0];
+            const courseid= courseNumber.split('-')[1];
+            console.log("Coursenumber------", courseid); // Output: course-64
+            return(courseid);
+        }
+    });
+    return false;
+}
+
 // reloads whole progress view - it is not as smooth as just changing width
 // on the other hand - the progress bar is correct an unmodified
 export const changeProgressbar = async() => {
     // ...
-    const prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
-    const course_id = prbar.getAttribute('courseid');
-    const response = await getProgressbarInnerHTML(course_id);
+    //const prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
+    //const course_id = prbar.getAttribute('courseid');
+    const course_id = getCourseIdFromBody();
+    if(course_id) {
+        const response = await getProgressbarInnerHTML(course_id);
 
-    if (response && response.innerHTML) {
-        window.console.log("getProgressbarInnerHTML----response", response);
-        // Check if the data is valid - JSON.parse returns false - so no check available
-        var innerHTML = response.innerHTML;
-        const prcourseview = document.getElementsByClassName('progress courseview')[0];
+        if (response && response.innerHTML) {
+            window.console.log("getProgressbarInnerHTML----response", response);
+            // Check if the data is valid - JSON.parse returns false - so no check available
+            var innerHTML = response.innerHTML;
+            const prcourseview = document.getElementsByClassName('progress courseview')[0];
 
-        const elementToReplace = prcourseview;
-        const newElement = document.createElement('div');
-        newElement.innerHTML = innerHTML;
-        const parentElement = elementToReplace.parentNode;
-        parentElement.replaceChild(newElement, elementToReplace);
+            const elementToReplace = prcourseview;
+            const newElement = document.createElement('div');
+            newElement.innerHTML = innerHTML;
+            const parentElement = elementToReplace.parentNode;
+            parentElement.replaceChild(newElement, elementToReplace);
+        } else {
+            console.log("no completion detected");
+        }
+        return true;
     } else {
-        console.log("no completion detected");
+        console.log("no course id detected");
+        return false;
     }
-    return true;
 };
+
 
 var dynprbar_action = changeProgressbar;
 
