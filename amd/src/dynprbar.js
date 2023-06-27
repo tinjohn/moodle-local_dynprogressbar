@@ -104,7 +104,6 @@ export const changeProgressbar = async() => {
         var response = await getProgressbarInnerHTML(course_id);
         if (response && response.innerHTML) {
             window.console.log("getProgressbarInnerHTML----response", response);
-           
             var innerHTML = response.innerHTML;
             const prcourseview = document.getElementsByClassName('progress courseview')[0];
             var elementToReplace = prcourseview;
@@ -117,7 +116,7 @@ export const changeProgressbar = async() => {
         } else {
             console.log("no progressbar update available");
         }
-        // GAME 
+        // GAME
         var response = await getProgressbarInnerHTMLGame(course_id);
          if (response && response.innerHTML) {
             window.console.log("getProgressbarInnerHTMLGAME----response", response);
