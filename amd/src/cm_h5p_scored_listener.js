@@ -50,7 +50,7 @@ export const init = () => {
               { detail: { message: 'a course module completed or scored' } });
               // // Trigger the custom event
               document.dispatchEvent(cmcompletedEvent);
-              hideCompletionInfo(this.frameElement);
+              //hideCompletionInfo(this.frameElement);
           }
       }
   };
