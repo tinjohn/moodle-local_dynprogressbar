@@ -1,2 +1,5 @@
 # moodle-local_dynprogressbar
- Make any progressbar umpdated in real-time
++ Goal: Make any progressbar updated in real-time
++ Status: 
+  + theme_learnr progress bar 
+  + block_game progress
