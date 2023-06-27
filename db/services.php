@@ -43,13 +43,20 @@ $functions = array(
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
         'ajax' => true,
     ),
-);
 
-$functions = array(
     'local_dynprogressbar_get_progressbar_innerhtml' => array(
         'classname' => 'local_dynprogressbar_external',
         'methodname' => 'get_progressbar_innerhtml',
         'description' => 'Return the progressbar html.',
+        'type' => 'read',
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'ajax' => true,
+    ),
+
+    'local_dynprogressbar_get_progressbar_innerhtml_game' => array(
+        'classname' => 'local_dynprogressbar_external',
+        'methodname' => 'get_progressbar_innerhtml_game',
+        'description' => 'Return the game html.',
         'type' => 'read',
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
         'ajax' => true,

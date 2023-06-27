@@ -1,6 +1,7 @@
 import {getActivityCompletion} from './repository';
 import {getProgressPercentage} from './repository';
 import {getProgressbarInnerHTML} from './repository';
+import {getProgressbarInnerHTMLGame} from './repository';
 import { init as h5plistener } from './cm_h5p_scored_listener';
 import { init as cmtogglelistener } from './cm_man_compl_toggle';
 
@@ -100,22 +101,54 @@ export const changeProgressbar = async() => {
     //const course_id = prbar.getAttribute('courseid');
     const course_id = getCourseIdFromBody();
     if(course_id) {
-        const response = await getProgressbarInnerHTML(course_id);
+        var response = await getProgressbarInnerHTML(course_id);
+       // const responseGAME = await getProgressbarInnerHTMLGame(course_id);
 
         if (response && response.innerHTML) {
             window.console.log("getProgressbarInnerHTML----response", response);
             // Check if the data is valid - JSON.parse returns false - so no check available
             var innerHTML = response.innerHTML;
             const prcourseview = document.getElementsByClassName('progress courseview')[0];
-
-            const elementToReplace = prcourseview;
+            var elementToReplace = prcourseview;
             const newElement = document.createElement('div');
             newElement.innerHTML = innerHTML;
             const parentElement = elementToReplace.parentNode;
             parentElement.replaceChild(newElement, elementToReplace);
+
+            // // GAME in progress
+            // var innerHTML = responseGAME.innerHTML;
+            // const prgame = document.getElementsByClassName('gameTable')[0];
+            // const elementToReplaceGAME = prgame;
+            // const newElementGAME = document.createElement('div');
+            // newElementGAME.innerHTML = innerHTML;
+            // const parentElementGAME = elementToReplaceGAME.parentNode;
+            // parentElementGAME.replaceChild(newElementGAME, elementToReplaceGAME);
+
         } else {
-            console.log("no completion detected");
+            console.log("no progressbar update available");
         }
+        var response = await getProgressbarInnerHTMLGame(course_id);
+
+         if (response && response.innerHTML) {
+            window.console.log("getProgressbarInnerHTMLGAME----response", response);
+            // Check if the data is valid - JSON.parse returns false - so no check available
+             var innerHTML = response.innerHTML;
+
+             // // GAME in progress
+             var innerHTML = response.innerHTML;
+             const prgame = document.getElementsByClassName('gameTable')[0];
+             const elementToReplaceGAME = prgame.parentNode;
+             const newElementGAME = document.createElement('div');
+             newElementGAME.innerHTML = innerHTML;
+             const parentElementGAME = elementToReplaceGAME.parentNode;
+             parentElementGAME.replaceChild(newElementGAME, elementToReplaceGAME);
+
+         } else {
+             console.log("no game update possible");
+             window.console.log("getProgressbarInnerHTMLGAME----response", response);
+
+         }
+
         return true;
     } else {
         console.log("no course id detected");

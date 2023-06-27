@@ -58,4 +58,15 @@ export const getProgressbarInnerHTML = (
     },
 }])[0];
 
+export const getProgressbarInnerHTMLGame = (
+    courseid,
+//    userid,
+) => fetchMany([{
+    methodname: 'local_dynprogressbar_get_progressbar_innerhtml_game',
+    args: {
+        courseid,
+//        userid,
+    },
+}])[0];
+
 
