@@ -61,4 +61,15 @@ $functions = array(
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
         'ajax' => true,
     ),
+
+    'local_dynprogressbar_get_activity_information_innerhtml' => array(
+        'classname' => 'local_dynprogressbar_external',
+        'methodname' => 'get_activity_information_innerhtml',
+        'description' => 'Return the game html.',
+        'type' => 'read',
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'ajax' => true,
+    ),
+
+    
 );

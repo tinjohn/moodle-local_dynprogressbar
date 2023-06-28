@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import {getActivityInformationInnerHTML} from './repository';
 
 
 let registered = false;
@@ -50,17 +51,67 @@ export const init = () => {
               { detail: { message: 'a course module completed or scored' } });
               // // Trigger the custom event
               document.dispatchEvent(cmcompletedEvent);
+              const theiframe = this.frameElement;
+              setTimeout(function() {
+                hideCompletionInfo(theiframe); // Call the function with arguments
+              }, 300);
               //hideCompletionInfo(this.frameElement);
           }
       }
   };
 
-  const hideCompletionInfo = (eventtarget) => {
+
+  /**
+* USED get course id from body tag
+* Add progress whenever context.id module was not completed on inital load.
+*/
+function getCourseIdFromBody() {
+  const bodyTag = document.getElementsByTagName('body')[0];
+  const attributeNames = bodyTag.getAttributeNames();
+  var courseid;
+  attributeNames.forEach(attribute => {
+      const attributeValue = bodyTag.getAttribute(attribute);
+      const regex = /course-(\d+)/;
+      const matches = attributeValue.match(regex);
+      if (matches) {
+          const courseNumber = matches[0];
+          courseid = courseNumber.split('-')[1];
+          console.log("Coursenumber------", courseid); // Output: course-64
+          return(courseid);
+      }
+  });
+  if(courseid) {
+      return(courseid);
+  } else {
+      return false;
+  }
+}
+
+  const getCmid = (liidelement) => {
+    var courseid;
+    const attributeValue = liidelement.getAttribute('id');
+    const regex = /module-(\d+)/;
+        const matches = attributeValue.match(regex);
+        if (matches) {
+            const courseNumber = matches[0];
+            courseid = courseNumber.split('-')[1];
+            console.log("cmid------", courseid); // Output: module-341
+            return(courseid);
+        }
+  };
+
+
+  const hideCompletionInfo = async (eventtarget) => {
     console.log('eventtarget',eventtarget);
    // var parentElement = document.querySelector('div[data-region="completion-info"] [id="childElementID"]');
-    var element = eventtarget.closest('div[data-region="completion-info"]');
-    //var element = eventtarget.querySelector('div[data-region="completion-info"]');
-    element.style.visibility = 'hidden';
+    var element = eventtarget.closest('li > div');
+    const cmid = getCmid(eventtarget.closest('li'));
+    const course_id = getCourseIdFromBody();
+    const response = await getActivityInformationInnerHTML(course_id, cmid);
+    window.console.log("getActivityInformationInnerHTML----response", response.innerHTML);
+
+    var element = element.querySelector('div[data-region="activity-information"]');
+    element.innerHTML = response.innerHTML;
     return true;
   };
 
