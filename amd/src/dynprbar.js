@@ -1,16 +1,42 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Dynamic Progressbar and more
+ *
+ * @module     local_dynprogressbar/dynprbar
+ * @copyright  2023 Tina John <tina.john@th-luebeck.de>
+ * @copyright  Institut fuer interaktive Systeme der TH Lübeck
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 import {getActivityCompletion} from './repository';
 import {getProgressPercentage} from './repository';
-import {getProgressbarInnerHTML} from './repository';
-import {getProgressbarInnerHTMLGame} from './repository';
+
+import {get_theme_learnr_Progressbar_InnerHTML} from './repository';
+import {get_block_Game_InnerHTML} from './repository';
 import { init as h5plistener } from './cm_h5p_scored_listener';
 import { init as cmtogglelistener } from './cm_man_compl_toggle';
 
+import {get_H5P_ActivityInformation_InnerHTML} from './repository';
 
 
-// DO NOT USE
+// DO NOT USE - getActivityCompletion misses ajax=true in used core webservice.
 export const addProgressFromCoreData = async() => {
-    // uses Core Webservice that is not true for ajax -
-    // only usable, if service.php is modified - no option
+    // Uses Core Webservice that is not true for ajax -.
+    // Only usable, if service.php is modified - no option.
     const prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
     const spanElement = document.querySelector('strong.progress-bar-num');
 
@@ -20,7 +46,7 @@ export const addProgressFromCoreData = async() => {
     const response = await getActivityCompletion(user_id, course_id);
     window.console.log("getActivityCompletion----response", response);
 
-    // Check if the data is valid - JSON.parse returns false - so no check available
+    // Check if the data is valid - JSON.parse returns false - so no check available.
     if (response && response.statuses && Array.isArray(response.statuses)) {
         let count = 0;
         let countall = 0;
@@ -39,8 +65,8 @@ export const addProgressFromCoreData = async() => {
 };
 
 
-// Smooth progressbar mod - but only width and innerhtlm values changed
-// potentiell important dependencies in tags are not modified
+// Smooth progressbar mod - but only width and innerhtlm values changed.
+// potentiell important dependencies in tags are not modified.
 export const changeProgressPercentage = async() => {
     // ...
     const prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
@@ -53,9 +79,9 @@ export const changeProgressPercentage = async() => {
     const response = await getProgressPercentage(course_id);
     if (response && response.progress) {
         if (response.warnings.length > 0) {
-            // The warnings array is not empty
+            // The warnings array is not empty.
             console.log("Warnings:", response.warnings);
-            // Perform further actions based on the warnings
+            // Perform further actions based on the warnings.
           }
         window.console.log("getProgressPercentage----response", response);
         // Check if the data is valid - JSON.parse returns false - so no check available
@@ -93,17 +119,48 @@ function getCourseIdFromBody() {
     }
 }
 
-// reloads whole progress view - it is not as smooth as just changing width
-// on the other hand - the progress bar is correct an unmodified
+// Reloads whole progress view - it is not as smooth as just changing width.
+// On the other hand - the progress bar is correct and overall up-to-date.
 export const changeProgressbar = async() => {
     // ...
     //const prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
     //const course_id = prbar.getAttribute('courseid');
     const course_id = getCourseIdFromBody();
     if(course_id) {
-        var response = await getProgressbarInnerHTML(course_id);
+        var response = await get_theme_learnr_Progressbar_InnerHTML(course_id);
         if (response && response.innerHTML) {
-            window.console.log("getProgressbarInnerHTML----response", response);
+            window.console.log("get_theme_learnr_Progressbar_InnerHTML----response", response);
+            var innerHTML = response.innerHTML;
+            const prcourseview = document.getElementsByClassName('progress courseview')[0];
+            var elementToReplace = prcourseview;
+             // creates additional div but the parent node might have siblings just to be safe
+             const newElement = document.createElement('div');
+            newElement.innerHTML = innerHTML;
+            const parentElement = elementToReplace.parentNode;
+            parentElement.replaceChild(newElement, elementToReplace);
+
+        } else {
+            console.log("no progressbar update available");
+        }
+        return true;
+    } else {
+        console.log("no course id detected");
+        return false;
+    }
+};
+
+// reloads whole progress view - it is not as smooth as just changing width
+// on the other hand - the progress bar is correct an unmodified
+// AND GAME
+export const changeProgressbarNGame = async() => {
+    // ...
+    //const prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
+    //const course_id = prbar.getAttribute('courseid');
+    const course_id = getCourseIdFromBody();
+    if(course_id) {
+        var response = await get_theme_learnr_Progressbar_InnerHTML(course_id);
+        if (response && response.innerHTML) {
+            window.console.log("get_theme_learnr_Progressbar_InnerHTML----response", response);
             var innerHTML = response.innerHTML;
             const prcourseview = document.getElementsByClassName('progress courseview')[0];
             var elementToReplace = prcourseview;
@@ -117,9 +174,9 @@ export const changeProgressbar = async() => {
             console.log("no progressbar update available");
         }
         // GAME
-        var response = await getProgressbarInnerHTMLGame(course_id);
+        var response = await get_block_Game_InnerHTML(course_id);
          if (response && response.innerHTML) {
-            window.console.log("getProgressbarInnerHTMLGAME----response", response);
+            window.console.log("get_block_Game_InnerHTML----response", response);
              var innerHTML = response.innerHTML;
              const prgame = document.getElementsByClassName('gameTable')[0];
              const elementToReplaceGAME = prgame.parentNode;
@@ -131,7 +188,7 @@ export const changeProgressbar = async() => {
 
          } else {
              console.log("no game update possible");
-             window.console.log("getProgressbarInnerHTMLGAME----response", response);
+             window.console.log("get_block_Game_InnerHTML----response", response);
 
          }
 
@@ -141,9 +198,80 @@ export const changeProgressbar = async() => {
         return false;
     }
 };
+// Uodates the GAME plugin interface.
+export const changeGAME = async() => {
+    // ...
+    //const prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
+    //const course_id = prbar.getAttribute('courseid');
+    const course_id = getCourseIdFromBody();
+    if(course_id) {
+        // GAME
+        var response = await get_block_Game_InnerHTML(course_id);
+         if (response && response.innerHTML) {
+            window.console.log("get_block_Game_InnerHTML----response", response);
+             var innerHTML = response.innerHTML;
+             const prgame = document.getElementsByClassName('gameTable')[0];
+             const elementToReplaceGAME = prgame.parentNode;
+             // creates additional div but the parent node might have siblings just to be safe
+             const newElementGAME = document.createElement('div');
+             newElementGAME.innerHTML = innerHTML;
+             const parentElementGAME = elementToReplaceGAME.parentNode;
+             parentElementGAME.replaceChild(newElementGAME, elementToReplaceGAME);
+
+         } else {
+             console.log("no game update possible");
+             window.console.log("get_block_Game_InnerHTML----response", response);
+         }
+        return true;
+    } else {
+        console.log("no course id detected");
+        return false;
+    }
+};
 
 
-var dynprbar_action = changeProgressbar;
+const getCmid = (liidelement) => {
+    var courseid;
+    const attributeValue = liidelement.getAttribute('id');
+    const regex = /module-(\d+)/;
+        const matches = attributeValue.match(regex);
+        if (matches) {
+            const courseNumber = matches[0];
+            courseid = courseNumber.split('-')[1];
+            console.log("cmid------", courseid); // Output: module-341
+            return(courseid);
+        }
+  };
+
+const changeCompletionInfo = async (event) => {
+    window.console.log('--changeCompletionInfo--event',event);
+    if (event && event.detail) {
+        if(event.detail.completionType && event.detail.completionType == 'H5Pscored') {
+            if(event.detail.framedin) {
+                const eventtarget = event.detail.framedin;
+                console.log('eventtarget',eventtarget);
+            // var parentElement = document.querySelector('div[data-region="completion-info"] [id="childElementID"]');
+                var element = eventtarget.closest('li > div');
+                const cmid = getCmid(eventtarget.closest('li'));
+                const course_id = getCourseIdFromBody();
+                const response = await get_H5P_ActivityInformation_InnerHTML(course_id, cmid);
+                window.console.log("get_H5P_ActivityInformation_InnerHTML----response", response);
+
+                var element = element.querySelector('div[data-region="activity-information"]');
+                element.innerHTML = response.innerHTML;
+            } else {
+                window.console.log("no DOM for ActivityInformation in event");
+            }
+        } else {
+            window.console.log("no H5Pscored completionType in event");
+        }
+    }
+    return true;
+};
+
+const dynprbar_action = changeProgressbar; // Without GAME.
+const game_action = changeGAME; // With GAME.
+const complinfo_action = changeCompletionInfo; // With GAME.
 
 export const init = () => {
     var prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
@@ -161,15 +289,17 @@ export const init = () => {
         //var pr = document.getElementsByClassName('progress')[0];
         var prbar = document.getElementsByClassName('progress-bar progress-bar-info')[0];
        // alert('pr' + pr);
-       // nimm doch das bitte
         console.log('prbarneusrc' + prbar);
         // Add an event listener to handle the cmcompleted - send from the own listener to ajax
         document.addEventListener('cmcompleted', function(event) {
             console.log('cmcompleted----Custom event triggered:', event.detail.message);
-            // another Option to changeProgressbar or the other 2 Variants of dynprbar_action()
+            // one option to changeProgressbar or the other 2 Variants of dynprbar_action()
             // implement wait 300 ms - to give some time to the core events dealing with the completion
-            setTimeout(dynprbar_action, 300);
-            //dynprbar_action();
+             setTimeout(function() {
+                dynprbar_action(); // The progressbar.
+                complinfo_action(event); // The H5P completion section.
+                game_action(); // The GAME.
+            }, 300);
         });
     });
 

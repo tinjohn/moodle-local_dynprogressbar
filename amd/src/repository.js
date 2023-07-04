@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Theme LearnR - JS code repository - moodle default
+ * Dynamic Progressbar and more - JS code repository - moodle default
  *
  * @module     local_dynprogressbar/repository
  * @copyright  2023 Tina John <tina.john@th-luebeck.de>
@@ -47,7 +47,7 @@ export const getProgressPercentage = (
     },
 }])[0];
 
-export const getProgressbarInnerHTML = (
+export const get_theme_learnr_Progressbar_InnerHTML = (
     courseid,
 //    userid,
 ) => fetchMany([{
@@ -58,7 +58,8 @@ export const getProgressbarInnerHTML = (
     },
 }])[0];
 
-export const getProgressbarInnerHTMLGame = (
+
+export const get_block_Game_InnerHTML = (
     courseid,
 //    userid,
 ) => fetchMany([{
@@ -69,7 +70,7 @@ export const getProgressbarInnerHTMLGame = (
     },
 }])[0];
 
-export const getActivityInformationInnerHTML = (
+export const get_H5P_ActivityInformation_InnerHTML = (
     courseid,
     cmid,
 ) => fetchMany([{

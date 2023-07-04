@@ -45,7 +45,7 @@ $functions = array(
     ),
 
     'local_dynprogressbar_get_progressbar_innerhtml' => array(
-        'classname' => 'local_dynprogressbar_external',
+        'classname' => 'local_dynprogressbar_external_theme_learnr_progressbar',
         'methodname' => 'get_progressbar_innerhtml',
         'description' => 'Return the progressbar html.',
         'type' => 'read',
@@ -54,7 +54,7 @@ $functions = array(
     ),
 
     'local_dynprogressbar_get_progressbar_innerhtml_game' => array(
-        'classname' => 'local_dynprogressbar_external',
+        'classname' => 'local_dynprogressbar_external_block_game',
         'methodname' => 'get_progressbar_innerhtml_game',
         'description' => 'Return the game html.',
         'type' => 'read',
@@ -63,7 +63,7 @@ $functions = array(
     ),
 
     'local_dynprogressbar_get_activity_information_innerhtml' => array(
-        'classname' => 'local_dynprogressbar_external',
+        'classname' => 'local_dynprogressbar_external_h5p_activityinformation',
         'methodname' => 'get_activity_information_innerhtml',
         'description' => 'Return the game html.',
         'type' => 'read',

@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Theme LearnR - JS code cm_h5p_scored_listener
+ * Dynamic Progressbar and more - JS code cm_h5p_scored_listener
  *
  * @module     local_dynprogressbar/cm_h5p_scored_listener
  * @copyright  2023 Tina John <tina.john@th-luebeck.de>
@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getActivityInformationInnerHTML} from './repository';
+import {get_H5P_ActivityInformation_InnerHTML} from './repository';
 
 
 let registered = false;
@@ -46,22 +46,27 @@ export const init = () => {
     if(event && event.data && event.data.statement && event.data.statement.result) {
           if(event.data.statement.result.score && event.data.statement.result.score.scaled) {
               console.log('--externalDispatcher-handleXAPIEvent-',event);
+              const theiframe = this.frameElement;
               // Trigger the custom event
               var cmcompletedEvent = new CustomEvent('cmcompleted',
-              { detail: { message: 'a course module completed or scored' } });
+              { detail: {
+                completionType: 'H5Pscored',
+                framedin: theiframe,
+                message: 'a course module completed or scored'
+               }
+              });
               // // Trigger the custom event
               document.dispatchEvent(cmcompletedEvent);
-              const theiframe = this.frameElement;
-              setTimeout(function() {
-                hideCompletionInfo(theiframe); // Call the function with arguments
-              }, 300);
+              // setTimeout(function() {
+              //   hideCompletionInfo(theiframe); // Call the function with arguments
+              // }, 300);
               //hideCompletionInfo(this.frameElement);
           }
       }
   };
 
 
-  /**
+/**
 * USED get course id from body tag
 * Add progress whenever context.id module was not completed on inital load.
 */
@@ -107,8 +112,8 @@ function getCourseIdFromBody() {
     var element = eventtarget.closest('li > div');
     const cmid = getCmid(eventtarget.closest('li'));
     const course_id = getCourseIdFromBody();
-    const response = await getActivityInformationInnerHTML(course_id, cmid);
-    window.console.log("getActivityInformationInnerHTML----response", response.innerHTML);
+    const response = await get_H5P_ActivityInformation_InnerHTML(course_id, cmid);
+    window.console.log("get_H5P_ActivityInformation_InnerHTML----response", response.innerHTML);
 
     var element = element.querySelector('div[data-region="activity-information"]');
     element.innerHTML = response.innerHTML;
